@@ -1,0 +1,84 @@
+@include('layout.header')
+{{ Form::open(array('url' => 'transaction_child/product/add/submit')) }}
+<input type="hidden" value="{{ Route::input('transaction_parent_id') }}" name="transaction_parent_id">
+<h3>ລາຍການຂາຍ (Transaction)</h3>
+<hr class="hrHeader"/>
+<div align="center">
+<div class="k-block extended auto" style="width:40%">
+ເພີ່ມລາຍການສິນຄ້າ
+<hr/>
+		@if ($errors->has()) @foreach ($errors->all() as $error)
+		<div class="message red">
+			{{ $error }}<br />
+		</div>
+		@endforeach @endif
+	<table class="tableStyling" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+			<td colspan="2"><input type="text" name="product_id" id="product_id" value="" style="width:100%"></td>
+		</tr>
+		@if($status!=0)
+		<tr>
+			<td><input type="text" name="issue_slip_id" placeholder="ລະຫັດ ໃບເບີກຈ່າຍສິນຄ້າ..." id="issue_slip_id" class="k-textbox" value="" style="width:100%"></td>
+			<td><input type="text" name="issue_date" placeholder="ວັນທີເບີກຈ່າຍສິນຄ້າ..." id="issue_date" value="" style="width:100%"></td>
+		</tr>
+		@endif
+		<tr>
+			<td align="right">ຈຳນວນ:</td>
+			<td><input type="text" name="quality" placeholder="ຈຳນວນ..." id="quality" value="0" style="width:80%" min="0" step="0.50"> m<sup>3</sup></td>
+		</tr>
+		@if($status!=0)
+<tr>
+			<td align="right">ຫມາຍເລກລົດ:</td>
+			<td><input type="text" name="truck_number" placeholder="ທະບຽນລົດ..." class="k-textbox" id="truck_number" style="width:100%" min="0"></td>
+		</tr>
+		@endif
+		<tr>
+			<td colspan="2"><textarea class="k-textbox" placeholder="ຫມາຍເຫດ..." style="width:100%" name="remark"></textarea></td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" align="right">
+			<a href="javascript:history.back()" class="k-button">ຍົກເລີກ</a> 
+			{{Form::submit('ບັນທຶກ', ['class' => 'k-button k-primary'])}}
+			</td>
+			
+		</tr>
+	</table>
+</div>
+
+</div>
+{{Form::close()}}
+<script type="text/javascript">
+	$(document).ready(function(e){
+
+		var issue_date = $("#issue_date").kendoDateTimePicker({
+			format : "dd-MMM-yyyy hh:mm"
+		}).data('kendoDateTimePicker');
+
+
+		$("#quality").kendoNumericTextBox();
+		
+		// Dropdown Project list
+		$("#product_id").kendoDropDownList({
+			dataValueField: "id",
+	        dataTextField: "title_html",
+	        autoBind: true,
+	        change: function(e) {
+
+	        },
+	        optionLabel: {
+	        	title_html: '- ລາຍການ ສິນຄ້າ -',
+	            id: ""
+	        },
+	        dataSource: {
+	            transport: {
+	                read: {
+	                	url: "{{ URL::to('product/json/list') }}",
+	                    dataType: "json",
+	                }
+	            }
+	        }
+		});
+	});
+</script>
+@include('layout.footer')
